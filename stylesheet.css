@@ -55,6 +55,7 @@ footer {
     margin-top:10px;margin-bottom:10px;
     background-color:#fff;
     padding:20px;
+    height:fit-content
 }
 
 .logo{
@@ -63,10 +64,20 @@ footer {
     color:#fff;
 }
 
+.center{
+    margin-left:auto;margin-right:auto;
+    padding:8px;
+    width:fit-content;
+}
+
 h1{font-family:'Didot'}
 h2{font-family:'Verdana'}
 a{color:#4aa}
 a :visited{color:#a4a}
+li{width:fit-content}
+
+section{height:fit-content;overflow: hidden;}
+img{border-radius: 20px;}
 
 @media (max-width: 600px) {
     nav ul li {
@@ -74,6 +85,7 @@ a :visited{color:#a4a}
         margin: 10px 0;
     }
 }
+
 #map {
     height: 600px;
     width: 100%;
