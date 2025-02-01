@@ -131,12 +131,14 @@ function getDirections() {
     }
 }
 
-function calculateAndDisplayRoute(start, end, travelMode) {
+function calculateAndDisplayRoute(start, end) {
+    const selectedMode = document.getElementById("travel-mode").value;
+
     directionsService.route(
         {
             origin: start,
             destination: end,
-            travelMode: google.maps.TravelMode[travelMode]
+            travelMode: google.maps.TravelMode[selectedMode]
         },
         (response, status) => {
             if (status === "OK") {
