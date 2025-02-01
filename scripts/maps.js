@@ -227,26 +227,28 @@ function getDirections() {
         calculateAndDisplayRoute(start, { lat: parseFloat(end[0]), lng: parseFloat(end[1]) }, travelMode);
     }
 }
-
 function calculateAndDisplayRoute(start, end, travelMode) {
     if (!directionsService || !directionsRenderer) {
         console.error("Directions service not initialized.");
         alert("Error loading directions. Please try again.");
         return;
     }
-
-    directionsService.route(
-        {
-            origin: start,
-            destination: end,
-            travelMode: google.maps.TravelMode[travelMode]
-        },
-        (response, status) => {
-            if (status === "OK") {
-                directionsRenderer.setDirections(response);
-            } else {
-                alert("Directions request failed due to " + status);
-            }
+    let request = {
+        origin: start,
+        destination: end,
+        travelMode: google.maps.TravelMode[travelMode]
+    };
+        if (travelMode === "TRANSIT") {
+        request.transitOptions = {
+            departureTime: new Date()
+        };
+    }
+    directionsService.route(request, (response, status) => {
+        if (status === google.maps.DirectionsStatus.OK) {
+            directionsRenderer.setDirections(response);
+        } else {
+            console.error("Directions request failed due to: ", status);
+            alert("Directions request failed due to " + status);
         }
-    );
+    });
 }
