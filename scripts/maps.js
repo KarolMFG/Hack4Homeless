@@ -20,21 +20,11 @@ function addShelter(e) {
 
     const shelter = { name: shelterName, address: shelterAddress, lat: shelterLat, lng: shelterLng };
 
-    if (map) {
-        new google.maps.Marker({
-            position: { lat: shelterLat, lng: shelterLng },
-            map: map,
-            title: shelterName
-        });
+    let shelters = JSON.parse(localStorage.getItem("shelters")) || [];
+    shelters.push(shelter);
+    localStorage.setItem("shelters", JSON.stringify(shelters));
 
-        let shelters = JSON.parse(localStorage.getItem("shelters")) || [];
-        shelters.push(shelter);
-        localStorage.setItem("shelters", JSON.stringify(shelters));
-
-        updateShelterDropdown();
-    } else {
-        alert("Error: Map is not initialized.");
-    }
+    // updateShelterDropdown();
 
     alert("Shelter request submitted successfully!");
     document.getElementById("shelter-request-form").reset();
