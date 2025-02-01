@@ -109,7 +109,7 @@ function addShelter(e) {
     shelters.push(shelter);
     localStorage.setItem("shelters", JSON.stringify(shelters));
 
-    alert("Shelter request submitted successfully!");
+    // alert("Shelter request submitted successfully!");
     document.getElementById("shelter-request-form").reset();
     loadShelters();
 }
