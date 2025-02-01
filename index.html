@@ -6,7 +6,17 @@
     <title>Hack4Homeless</title>
     <link rel="stylesheet" href="stylesheet.css">
     <!--api key is not a big deal-->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&callback=initMap&v=weekly" defer></script>
+<script>
+    fetch('config.json')
+        .then(response => response.json())
+        .then(config => {
+            const script = document.createElement('script');
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${config.GOOGLE_MAPS_API_KEY}&callback=initMap&v=weekly`;
+            script.defer = true;
+            document.head.appendChild(script);
+        })
+        .catch(error => console.error("Error loading API key:", error));
+</script>
     <script src="https://karolmfg.github.io/Hack4Homeless/scripts/logo.js" defer></script>
     <script>
         let map, directionsService, directionsRenderer;
