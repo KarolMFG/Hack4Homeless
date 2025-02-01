@@ -4,31 +4,6 @@
     <title>Hack4Homeless Apply</title>
     <link rel="stylesheet" href="../stylesheet.css">
     <script src="https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places" defer></script>    
-<script>
-    function loadGoogleMaps(apiKey) {
-        if (!apiKey) {
-            console.error("Error: API key is missing.");
-            alert("Error: Google Maps API key not found.");
-            return;
-        }
-        const script = document.createElement("script");
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initMap&v=weekly`;
-        script.defer = true;
-        document.head.appendChild(script);
-    }
-    fetch('/config.json')  // Adjust path if needed
-        .then(response => {
-            if (!response.ok) throw new Error(`Failed to load API key. Status: ${response.status}`);
-            return response.json();
-        })
-        .then(config => {
-            loadGoogleMaps(config.GOOGLE_MAPS_API_KEY);
-        })
-        .catch(error => {
-            console.error("Error loading API key:", error);
-            alert("Error: Could not load API key. Please check config.json.");
-        });
-</script>
     <script src="https://karolmfg.github.io/Hack4Homeless/scripts/maps.js" defer></script>
     <script src="https://karolmfg.github.io/Hack4Homeless/scripts/autocomplete.js" defer></script>
 </head>
