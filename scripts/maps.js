@@ -1,22 +1,43 @@
 let map, directionsService, directionsRenderer;
 
 document.addEventListener("DOMContentLoaded", () => {
-    if (document.getElementById("shelter-request-form")) {
-        document.getElementById("shelter-request-form").addEventListener("submit", addShelter);
-    }
+    // Check if elements exist before adding event listeners
+    const form = document.getElementById("shelter-request-form");
+    const directionsButton = document.getElementById("get-directions");
+    const addressInput = document.getElementById("shelter-address");
 
-    if (document.getElementById("get-directions")) {
-        document.getElementById("get-directions").addEventListener("click", getDirections);
-    }
+    if (form) form.addEventListener("submit", addShelter);
+    if (directionsButton) directionsButton.addEventListener("click", getDirections);
+    if (addressInput) initAutocomplete();
 
-    if (document.getElementById("shelter-address")) {
-        initAutocomplete();
-    }
-
+    // Delay map initialization until the full page is loaded
     window.onload = function () {
         initMap();
     };
+
+    // Load API Key from config.json
+    loadApiKey();
 });
+
+function loadApiKey() {
+    fetch("/Hack4Homeless/config.json")
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Failed to load API key. Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(config => {
+            if (config.apiKey) {
+                console.log("API Key loaded successfully.");
+            } else {
+                throw new Error("API key is missing in config.json.");
+            }
+        })
+        .catch(error => {
+            console.error("Error loading API key:", error);
+        });
+}
 
 function initAutocomplete() {
     if (!window.google || !google.maps || !google.maps.places) {
@@ -45,10 +66,10 @@ function initAutocomplete() {
 function addShelter(e) {
     e.preventDefault();
 
-    const shelterName = document.getElementById("shelter-name").value.trim();
-    const shelterAddress = document.getElementById("shelter-address").value.trim();
-    const shelterLat = parseFloat(document.getElementById("shelter-lat").value);
-    const shelterLng = parseFloat(document.getElementById("shelter-lng").value);
+    const shelterName = document.getElementById("shelter-name")?.value.trim();
+    const shelterAddress = document.getElementById("shelter-address")?.value.trim();
+    const shelterLat = parseFloat(document.getElementById("shelter-lat")?.value);
+    const shelterLng = parseFloat(document.getElementById("shelter-lng")?.value);
 
     if (!shelterName || !shelterAddress || isNaN(shelterLat) || isNaN(shelterLng)) {
         alert("Please enter valid shelter details.");
@@ -72,16 +93,18 @@ function loadShelters() {
         return;
     }
 
-    const sampleShelters = [
-        { name: "DC Central Kitchen", lat: 38.9006, lng: -77.0437 },
-        { name: "Miriam’s Kitchen", lat: 38.9027, lng: -77.0176 },
-        { name: "SOME (So Others Might Eat)", lat: 38.8971, lng: -77.0276 },
-        { name: "Friendship Place", lat: 38.9106, lng: -77.0324 },
-        { name: "The Father McKenna Center", lat: 38.8993, lng: -77.0260 }
-    ];
-
     let shelters = JSON.parse(localStorage.getItem("shelters")) || [];
-    shelters = shelters.concat(sampleShelters);
+    
+    if (shelters.length === 0) {
+        console.warn("No shelters found in localStorage, loading sample shelters.");
+        shelters = [
+            { name: "DC Central Kitchen", lat: 38.9006, lng: -77.0437 },
+            { name: "Miriam’s Kitchen", lat: 38.9027, lng: -77.0176 },
+            { name: "SOME (So Others Might Eat)", lat: 38.8971, lng: -77.0276 },
+            { name: "Friendship Place", lat: 38.9106, lng: -77.0324 },
+            { name: "The Father McKenna Center", lat: 38.8993, lng: -77.0260 }
+        ];
+    }
 
     shelters.forEach(shelter => {
         new google.maps.Marker({
@@ -91,10 +114,10 @@ function loadShelters() {
         });
     });
 
-    updateShelterDropdown();
+    updateShelterDropdown(shelters);
 }
 
-function updateShelterDropdown() {
+function updateShelterDropdown(shelters) {
     const shelterDropdown = document.getElementById("end");
     if (!shelterDropdown) {
         console.error("Shelter dropdown not found!");
@@ -102,7 +125,6 @@ function updateShelterDropdown() {
     }
 
     shelterDropdown.innerHTML = "";
-    const shelters = JSON.parse(localStorage.getItem("shelters")) || [];
 
     if (shelters.length === 0) {
         let defaultOption = document.createElement("option");
@@ -143,59 +165,4 @@ function initMap() {
     directionsRenderer.setPanel(document.getElementById("directions-panel"));
 
     loadShelters();
-}
-
-function getDirections() {
-    let start = document.getElementById("start").value;
-    let end = document.getElementById("end").value ? document.getElementById("end").value.split(",") : null;
-    let travelMode = document.getElementById("travel-mode").value;
-
-    if (!end || end.length !== 2) {
-        alert("Please select a valid shelter.");
-        return;
-    }
-
-    if (start === "current") {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const userLocation = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude
-                    };
-                    calculateAndDisplayRoute(userLocation, { lat: parseFloat(end[0]), lng: parseFloat(end[1]) }, travelMode);
-                },
-                () => {
-                    alert("Geolocation failed. Please enter your location manually.");
-                }
-            );
-        } else {
-            alert("Geolocation is not supported by your browser.");
-        }
-    } else {
-        calculateAndDisplayRoute(start, { lat: parseFloat(end[0]), lng: parseFloat(end[1]) }, travelMode);
-    }
-}
-
-function calculateAndDisplayRoute(start, end, travelMode) {
-    if (!directionsService || !directionsRenderer) {
-        console.error("Directions service not initialized.");
-        alert("Error loading directions. Please try again.");
-        return;
-    }
-
-    directionsService.route(
-        {
-            origin: start,
-            destination: end,
-            travelMode: google.maps.TravelMode[travelMode]
-        },
-        (response, status) => {
-            if (status === "OK") {
-                directionsRenderer.setDirections(response);
-            } else {
-                alert("Directions request failed due to " + status);
-            }
-        }
-    );
 }
