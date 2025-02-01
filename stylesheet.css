@@ -2,7 +2,7 @@ body {
     font-family: 'Trebuchet MS', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    background-color: #f0f0f0;
 }
 
 header {
@@ -48,6 +48,17 @@ footer {
     bottom: 0;
     width: 100%;
 }
+
+.main-container{
+    margin-left:auto;margin-right:auto;
+    width:92%;
+    margin-top:10px;margin-bottom:10px;
+    background-color:#fff;
+    padding:20px;
+}
+
+h1{font-family:'Didot'}
+h2{font-family:'Verdana'}
 
 @media (max-width: 600px) {
     nav ul li {
