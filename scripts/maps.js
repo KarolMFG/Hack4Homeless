@@ -1,4 +1,10 @@
-document.getElementById("shelter-request-form").addEventListener("submit", function (e) {
+let map, directionsService, directionsRenderer;
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("shelter-request-form").addEventListener("submit", addShelter);
+});
+
+function addShelter(e) {
     e.preventDefault();
 
     const shelterName = document.getElementById("shelter-name").value.trim();
@@ -7,13 +13,13 @@ document.getElementById("shelter-request-form").addEventListener("submit", funct
     const shelterLng = parseFloat(document.getElementById("shelter-lng").value);
 
     if (!shelterName || !shelterAddress || isNaN(shelterLat) || isNaN(shelterLng)) {
-        alert("Please provide valid shelter details.");
+        alert("Please enter valid shelter details.");
         return;
     }
 
     const shelter = { name: shelterName, address: shelterAddress, lat: shelterLat, lng: shelterLng };
 
-    if (typeof map !== "undefined" && map) {
+    if (map) {
         new google.maps.Marker({
             position: { lat: shelterLat, lng: shelterLng },
             map: map,
@@ -24,20 +30,26 @@ document.getElementById("shelter-request-form").addEventListener("submit", funct
         shelters.push(shelter);
         localStorage.setItem("shelters", JSON.stringify(shelters));
 
-        alert("Shelter request submitted successfully!");
-        document.getElementById("shelter-request-form").reset();
+        updateShelterDropdown(); // Update the dropdown list
     } else {
         alert("Error: Map is not initialized.");
     }
-});
+
+    alert("Shelter request submitted successfully!");
+    document.getElementById("shelter-request-form").reset();
+}
 
 function loadShelters() {
-    if (typeof map === "undefined" || !map) {
+    if (!map) {
         console.error("Map is not initialized.");
         return;
     }
 
     const shelters = JSON.parse(localStorage.getItem("shelters")) || [];
+
+    if (shelters.length === 0) {
+        console.warn("No shelters found in localStorage.");
+    }
 
     shelters.forEach(shelter => {
         new google.maps.Marker({
@@ -46,6 +58,29 @@ function loadShelters() {
             title: shelter.name
         });
     });
+
+    updateShelterDropdown();
+}
+
+function updateShelterDropdown() {
+    const shelterDropdown = document.getElementById("end");
+    shelterDropdown.innerHTML = ""; // Clear existing options
+
+    const shelters = JSON.parse(localStorage.getItem("shelters")) || [];
+
+    if (shelters.length === 0) {
+        let defaultOption = document.createElement("option");
+        defaultOption.textContent = "No shelters available";
+        defaultOption.disabled = true;
+        shelterDropdown.appendChild(defaultOption);
+    } else {
+        shelters.forEach(shelter => {
+            let option = document.createElement("option");
+            option.value = `${shelter.lat},${shelter.lng}`;
+            option.textContent = shelter.name;
+            shelterDropdown.appendChild(option);
+        });
+    }
 }
 
 function initMap() {
@@ -65,5 +100,53 @@ function initMap() {
     directionsRenderer.setMap(map);
     directionsRenderer.setPanel(document.getElementById("directions-panel"));
 
-    loadShelters();
+    loadShelters(); // Ensure existing shelters are loaded
+}
+
+document.getElementById("get-directions").addEventListener("click", () => {
+    let start = document.getElementById("start").value;
+    let end = document.getElementById("end").value.split(",");
+
+    if (!end || end.length !== 2) {
+        alert("Please select a valid shelter.");
+        return;
+    }
+
+    if (start === "current") {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const userLocation = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+                    calculateAndDisplayRoute(userLocation, { lat: parseFloat(end[0]), lng: parseFloat(end[1]) });
+                },
+                () => {
+                    alert("Geolocation failed. Please enter your location manually.");
+                }
+            );
+        } else {
+            alert("Geolocation is not supported by your browser.");
+        }
+    } else {
+        calculateAndDisplayRoute(start, { lat: parseFloat(end[0]), lng: parseFloat(end[1]) });
+    }
+});
+
+function calculateAndDisplayRoute(start, end) {
+    directionsService.route(
+        {
+            origin: start,
+            destination: end,
+            travelMode: google.maps.TravelMode.WALKING
+        },
+        (response, status) => {
+            if (status === "OK") {
+                directionsRenderer.setDirections(response);
+            } else {
+                alert("Directions request failed due to " + status);
+            }
+        }
+    );
 }
