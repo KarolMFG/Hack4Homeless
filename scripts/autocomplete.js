@@ -1,5 +1,15 @@
 document.addEventListener("DOMContentLoaded", function () {
+    if (!window.google || !google.maps || !google.maps.places) {
+        console.error("Google Maps API not loaded.");
+        return;
+    }
+
     let addressInput = document.getElementById("shelter-address");
+    if (!addressInput) {
+        console.error("Autocomplete input field not found!");
+        return;
+    }
+
     let autocomplete = new google.maps.places.Autocomplete(addressInput);
 
     autocomplete.addListener("place_changed", function () {
@@ -25,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         let newShelter = { name: shelterName, address: shelterAddress, lat: lat, lng: lng };
-        
+
         // Send data to `maps.js`
         if (window.addShelter) {
             addShelter(newShelter);
