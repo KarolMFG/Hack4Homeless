@@ -12,7 +12,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (form) form.addEventListener("submit", addShelter);
     if (directionsButton) directionsButton.addEventListener("click", getDirections);
-    if (addressInput) initAutocomplete();
+    if (addressInput) {// six feet from the edge and im thinking
+        setTimeout(()=>{initAutocomplete()}, 500)
+    }
 
     // Delay map initialization until the full page is loaded
     window.onload = function () {
