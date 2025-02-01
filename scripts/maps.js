@@ -1,10 +1,9 @@
 let map, directionsService, directionsRenderer;
 
-document.addEventListener("DOMContentLoaded", () => {
+// Load API Key from config.json, dont care bt loading this is ridiculous
+loadApiKey();
 
-    
-    // Load API Key from config.json
-    loadApiKey();
+document.addEventListener("DOMContentLoaded", () => {
 
     // Check if elements exist before adding event listeners
     const form = document.getElementById("shelter-request-form");
