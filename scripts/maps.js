@@ -17,7 +17,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Load API Key from config.json
     loadApiKey();
+    loadGoogleMaps(apiKey)
+
 });
+
+var apiKey;
 
 function loadApiKey() {
     fetch("https://karolmfg.github.io/Hack4Homeless/config.json")
@@ -30,6 +34,7 @@ function loadApiKey() {
         .then(config => {
             if (config.apiKey) {
                 console.log("API Key loaded successfully.");
+                apiKey = config.apiKey
             } else {
                 throw new Error("API key is missing in config.json.");
             }
