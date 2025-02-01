@@ -193,3 +193,50 @@ function initMap() {
 
     loadShelters();
 }
+function getDirections() {
+    let start = document.getElementById("start").value;
+    let end = document.getElementById("end").value.split(",");
+
+    if (!end || end.length !== 2) {
+        alert("Please select a valid shelter.");
+        return;
+    }
+
+    if (start === "current") {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const userLocation = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+                    calculateAndDisplayRoute(userLocation, { lat: parseFloat(end[0]), lng: parseFloat(end[1]) });
+                },
+                () => {
+                    alert("Geolocation failed. Please enter your location manually.");
+                }
+            );
+        } else {
+            alert("Geolocation is not supported by your browser.");
+        }
+    } else {
+        calculateAndDisplayRoute(start, { lat: parseFloat(end[0]), lng: parseFloat(end[1]) });
+    }
+}
+
+function calculateAndDisplayRoute(start, end) {
+    directionsService.route(
+        {
+            origin: start,
+            destination: end,
+            travelMode: google.maps.TravelMode.WALKING
+        },
+        (response, status) => {
+            if (status === "OK") {
+                directionsRenderer.setDirections(response);
+            } else {
+                alert("Directions request failed due to " + status);
+            }
+        }
+    );
+}
