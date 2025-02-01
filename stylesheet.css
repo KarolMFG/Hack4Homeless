@@ -57,8 +57,16 @@ footer {
     padding:20px;
 }
 
+.logo{
+    font-family:'Didot';
+    font-size:xx-large;
+    color:#fff;
+}
+
 h1{font-family:'Didot'}
 h2{font-family:'Verdana'}
+a{color:#4aa}
+a :visited{color:#a4a}
 
 @media (max-width: 600px) {
     nav ul li {
