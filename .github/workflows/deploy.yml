@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main
+      - main  # or 'master', depending on your repo
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -13,10 +13,9 @@ jobs:
       - name: Create API Config File
         run: |
           echo '{ "GOOGLE_MAPS_API_KEY": "${{ secrets.GOOGLE_MAPS_API_KEY }}" }' > config.json
-
-      - name: Deploy
+      - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
           folder: .
-          token: ${{ secrets.GH_PAT }}  # Use Personal Access Token
+          token: ${{ secrets.GH_PAT }}  # Uses your GitHub Personal Access Token
