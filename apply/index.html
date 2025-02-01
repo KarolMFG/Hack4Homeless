@@ -11,14 +11,12 @@
             alert("Error: Google Maps API key not found.");
             return;
         }
-
         const script = document.createElement("script");
         script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initMap&v=weekly`;
         script.defer = true;
         document.head.appendChild(script);
     }
-
-    fetch('../config.json')  // Adjust path if needed
+    fetch('Hack4Homeless/config.json')  // Adjust path if needed
         .then(response => {
             if (!response.ok) throw new Error(`Failed to load API key. Status: ${response.status}`);
             return response.json();
