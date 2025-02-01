@@ -3,7 +3,23 @@ let map, directionsService, directionsRenderer;
 document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("shelter-request-form").addEventListener("submit", addShelter);
     document.getElementById("get-directions").addEventListener("click", getDirections);
+    initAutocomplete();
 });
+
+function initAutocomplete() {
+    let addressInput = document.getElementById("shelter-address");
+    let autocomplete = new google.maps.places.Autocomplete(addressInput);
+
+    autocomplete.addListener("place_changed", function () {
+        let place = autocomplete.getPlace();
+        if (!place.geometry) {
+            alert("Invalid address. Please select from suggestions.");
+            return;
+        }
+        document.getElementById("shelter-lat").value = place.geometry.location.lat();
+        document.getElementById("shelter-lng").value = place.geometry.location.lng();
+    });
+}
 
 function addShelter(e) {
     e.preventDefault();
@@ -24,10 +40,9 @@ function addShelter(e) {
     shelters.push(shelter);
     localStorage.setItem("shelters", JSON.stringify(shelters));
 
-    // updateShelterDropdown();
-
     alert("Shelter request submitted successfully!");
     document.getElementById("shelter-request-form").reset();
+    loadShelters();
 }
 
 function loadShelters() {
@@ -78,7 +93,7 @@ function initMap() {
 
     map = new google.maps.Map(document.getElementById("map"), {
         zoom: 12,
-        center: { lat: 38.9072, lng: -77.0369 }
+        center: { lat: 38.9072, lng: -77.0369 } // Default to Washington, DC
     });
 
     directionsService = new google.maps.DirectionsService();
@@ -92,7 +107,7 @@ function initMap() {
 function getDirections() {
     let start = document.getElementById("start").value;
     let end = document.getElementById("end").value.split(",");
-    let travelMode = document.getElementById("travel-mode").value;  // Get selected mode
+    let travelMode = document.getElementById("travel-mode").value;
 
     if (!end || end.length !== 2) {
         alert("Please select a valid shelter.");
@@ -121,13 +136,12 @@ function getDirections() {
     }
 }
 
-
 function calculateAndDisplayRoute(start, end, travelMode) {
     directionsService.route(
         {
             origin: start,
             destination: end,
-            travelMode: google.maps.TravelMode[travelMode]  // Use the selected mode
+            travelMode: google.maps.TravelMode[travelMode]
         },
         (response, status) => {
             if (status === "OK") {
@@ -138,27 +152,3 @@ function calculateAndDisplayRoute(start, end, travelMode) {
         }
     );
 }
-
-document.getElementById("get-directions").addEventListener("click", () => {
-    let start = document.getElementById("start").value;
-    let end = document.getElementById("end").value.split(",");
-    let travelMode = document.getElementById("travel-mode").value; // Get selected travel mode
-    
-    if (start === "current") {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition((position) => {
-                const userLocation = {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude,
-                };
-                calculateAndDisplayRoute(userLocation, { lat: parseFloat(end[0]), lng: parseFloat(end[1]) }, travelMode);
-            }, () => {
-                alert("Geolocation failed. Please enter your location manually.");
-            });
-        } else {
-            alert("Geolocation is not supported by your browser.");
-        }
-    } else {
-        calculateAndDisplayRoute(start, { lat: parseFloat(end[0]), lng: parseFloat(end[1]) }, travelMode);
-    }
-});
