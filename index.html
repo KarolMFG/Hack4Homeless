@@ -143,22 +143,22 @@
     }
 });
 }
-        function calculateAndDisplayRoute(start, end) {
-            directionsService.route(
-                {
-                    origin: start,
-                    destination: end,
-                    travelMode: google.maps.TravelMode.WALKING, // Change to DRIVING if needed
-                },
-                (response, status) => {
-                    if (status === "OK") {
-                        directionsRenderer.setDirections(response);
-                    } else {
-                        alert("Directions request failed due to " + status);
-                    }
-                }
-            );
+function calculateAndDisplayRoute(start, end, travelMode) {
+    directionsService.route(
+        {
+            origin: start,
+            destination: end,
+            travelMode: google.maps.TravelMode[travelMode], // Use selected mode
+        },
+        (response, status) => {
+            if (status === "OK") {
+                directionsRenderer.setDirections(response);
+            } else {
+                alert("Directions request failed due to " + status);
+            }
         }
+    );
+}
     </script>
 </body>
 </html>
