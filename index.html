@@ -119,10 +119,10 @@
         option.textContent = shelter.name;
         shelterDropdown.appendChild(option);
     });
-    document.getElementById("get-directions").addEventListener("click", () => {
+document.getElementById("get-directions").addEventListener("click", () => {
     let start = document.getElementById("start").value;
     let end = document.getElementById("end").value.split(",");
-    let travelMode = document.getElementById("travel-mode").value; // Get the selected travel mode
+    let travelMode = document.getElementById("travel-mode").value; // Get selected travel mode
     
     if (start === "current") {
         if (navigator.geolocation) {
@@ -142,6 +142,7 @@
         calculateAndDisplayRoute(start, { lat: parseFloat(end[0]), lng: parseFloat(end[1]) }, travelMode);
     }
 });
+
 }
 function calculateAndDisplayRoute(start, end, travelMode) {
     directionsService.route(
