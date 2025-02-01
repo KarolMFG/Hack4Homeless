@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HackForHomeless Main Page</title>
+    <title>Hack4Homeless</title>
     <link rel="stylesheet" href="stylesheet.css">
     <!--api key is not a big deal-->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&callback=initMap&v=weekly" defer></script>
+    <script src="https://karolmfg.github.io/Hack4Homeless/scripts/logo.js" defer></script>
     <script>
         let map, directionsService, directionsRenderer;
         function initMap() {
@@ -81,7 +82,7 @@
 </head>
 <body onload="initMap()">
     <header>
-        <h1>HackForHomeless</h1>
+        <h1 class="logo">Hack4Homeless</h1>
         <nav>
             <ul>
                 <li><a href="#tutoring">Tutoring Services</a></li>
