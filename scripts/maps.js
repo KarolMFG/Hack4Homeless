@@ -51,7 +51,16 @@ function loadShelters() {
         return;
     }
 
-    const shelters = JSON.parse(localStorage.getItem("shelters")) || [];
+    const sampleShelters = [
+        { name: "DC Central Kitchen", lat: 38.9006, lng: -77.0437 },
+        { name: "Miriam’s Kitchen", lat: 38.9027, lng: -77.0176 },
+        { name: "SOME (So Others Might Eat)", lat: 38.8971, lng: -77.0276 },
+        { name: "Friendship Place", lat: 38.9106, lng: -77.0324 },
+        { name: "The Father McKenna Center", lat: 38.8993, lng: -77.0260 }
+    ];
+
+    var shelters = JSON.parse(localStorage.getItem("shelters")) || [];
+    shelters = shelters.concat(sampleShelters)
 
     shelters.forEach(shelter => {
         new google.maps.Marker({
