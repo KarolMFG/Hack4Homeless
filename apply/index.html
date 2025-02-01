@@ -16,7 +16,7 @@
         script.defer = true;
         document.head.appendChild(script);
     }
-    fetch('Hack4Homeless/config.json')  // Adjust path if needed
+    fetch('/config.json')  // Adjust path if needed
         .then(response => {
             if (!response.ok) throw new Error(`Failed to load API key. Status: ${response.status}`);
             return response.json();
