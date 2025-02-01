@@ -17,7 +17,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Load API Key from config.json
     loadApiKey();
-    loadGoogleMaps(apiKey)
 
 });
 
@@ -35,6 +34,7 @@ function loadApiKey() {
             if (config.apiKey) {
                 console.log("API Key loaded successfully.");
                 apiKey = config.apiKey
+                loadGoogleMaps(apiKey)// we out here creating inflexible chains
             } else {
                 throw new Error("API key is missing in config.json.");
             }
