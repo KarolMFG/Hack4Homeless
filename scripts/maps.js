@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function loadApiKey() {
-    fetch("/Hack4Homeless/config.json")
+    fetch("https://karolmfg.github.io/Hack4Homeless/config.json")
         .then(response => {
             if (!response.ok) {
                 throw new Error(`Failed to load API key. Status: ${response.status}`);
