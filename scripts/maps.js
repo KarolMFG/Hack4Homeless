@@ -194,9 +194,12 @@ function initMap() {
 
     loadShelters();
 }
+
+
 function getDirections() {
     let start = document.getElementById("start").value;
-    let end = document.getElementById("end").value.split(",");
+    let end = document.getElementById("end").value ? document.getElementById("end").value.split(",") : null;
+    let travelMode = document.getElementById("travel-mode").value;
 
     if (!end || end.length !== 2) {
         alert("Please select a valid shelter.");
@@ -211,7 +214,7 @@ function getDirections() {
                         lat: position.coords.latitude,
                         lng: position.coords.longitude
                     };
-                    calculateAndDisplayRoute(userLocation, { lat: parseFloat(end[0]), lng: parseFloat(end[1]) });
+                    calculateAndDisplayRoute(userLocation, { lat: parseFloat(end[0]), lng: parseFloat(end[1]) }, travelMode);
                 },
                 () => {
                     alert("Geolocation failed. Please enter your location manually.");
@@ -221,16 +224,22 @@ function getDirections() {
             alert("Geolocation is not supported by your browser.");
         }
     } else {
-        calculateAndDisplayRoute(start, { lat: parseFloat(end[0]), lng: parseFloat(end[1]) });
+        calculateAndDisplayRoute(start, { lat: parseFloat(end[0]), lng: parseFloat(end[1]) }, travelMode);
     }
 }
 
-function calculateAndDisplayRoute(start, end) {
+function calculateAndDisplayRoute(start, end, travelMode) {
+    if (!directionsService || !directionsRenderer) {
+        console.error("Directions service not initialized.");
+        alert("Error loading directions. Please try again.");
+        return;
+    }
+
     directionsService.route(
         {
             origin: start,
             destination: end,
-            travelMode: google.maps.TravelMode.WALKING
+            travelMode: google.maps.TravelMode[travelMode]
         },
         (response, status) => {
             if (status === "OK") {
