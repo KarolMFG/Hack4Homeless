@@ -138,3 +138,27 @@ function calculateAndDisplayRoute(start, end, travelMode) {
         }
     );
 }
+
+document.getElementById("get-directions").addEventListener("click", () => {
+    let start = document.getElementById("start").value;
+    let end = document.getElementById("end").value.split(",");
+    let travelMode = document.getElementById("travel-mode").value; // Get selected travel mode
+    
+    if (start === "current") {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                const userLocation = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude,
+                };
+                calculateAndDisplayRoute(userLocation, { lat: parseFloat(end[0]), lng: parseFloat(end[1]) }, travelMode);
+            }, () => {
+                alert("Geolocation failed. Please enter your location manually.");
+            });
+        } else {
+            alert("Geolocation is not supported by your browser.");
+        }
+    } else {
+        calculateAndDisplayRoute(start, { lat: parseFloat(end[0]), lng: parseFloat(end[1]) }, travelMode);
+    }
+});
