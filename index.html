@@ -18,26 +18,17 @@
             document.head.appendChild(script);
         }
         fetch('config.json')
-            .then(response => {
-                if (!response.ok) throw new Error(`Failed to load API key. Status: ${response.status}`);
-                return response.json();
-            })
-            .then(config => {
-                loadGoogleMaps(config.GOOGLE_MAPS_API_KEY);
-            })
-            .catch(error => {
-                console.error("Error loading API key:", error);
-                alert("Error: Could not load API key. Please check config.json.");
-            });
+            .then(response => response.json())
+            .then(config => loadGoogleMaps(config.GOOGLE_MAPS_API_KEY))
+            .catch(error => console.error("Error loading API key:", error));
     </script>
-    <script src="https://karolmfg.github.io/Hack4Homeless/scripts/maps.js" defer></script>
 </head>
 <body>
     <header>
         <h1 class="logo">Hack4Homeless</h1>
         <nav>
             <ul>
-                <li><a href="https://karolmfg.github.io/Hack4Homeless/info">General Information</a></li>
+                <li><a href="info">General Information</a></li>
                 <li><a href="#tutoring">Tutoring Services</a></li>
                 <li><a href="#libraries">Digital Libraries</a></li>
                 <li><a href="#courses">Online Courses</a></li>
@@ -50,7 +41,7 @@
             <h2>Request a Shelter to be Added to the Map</h2>
             <form id="shelter-request-form">
                 <label for="shelter-name">Shelter Name:</label>
-                <input type="text" id="shelter-name" required>     
+                <input type="text" id="shelter-name" required>
                 <label for="shelter-address">Shelter Address:</label>
                 <input type="text" id="shelter-address" required>
                 <label for="shelter-lat">Latitude:</label>
@@ -60,49 +51,52 @@
                 <button type="submit">Submit Request</button>
             </form>
         </section>
-        <section id="tutoring">
-            <h2>Tutoring Services for Homeless Students</h2>
-            <ul>
-                <li><a href="#">Tutoring Service 1</a></li>
-                <li><a href="#">Tutoring Service 2</a></li>
-                <li><a href="#">Tutoring Service 3</a></li>
-            </ul>
-        </section>
-        <section id="libraries">
-            <h2>Digital Libraries</h2>
-            <ul>
-                <li><a href="#">Digital Library Link #1</a></li>
-                <li><a href="#">Digital Library Link #2</a></li>
-                <li><a href="#">Digital Library Link #3</a></li>
-            </ul>
-        </section>
-        <section id="courses">
-            <h2>Online Courses</h2>
-            <ul>
-                <li><a href="#">Online Course #1</a></li>
-                <li><a href="#">Online Course #2</a></li>
-                <li><a href="#">Online Course #3</a></li>
-            </ul>
-        </section>
         <section id="map">
             <h2>Community Outreach Map</h2>
             <div id="map" style="height: 500px; width: 100%;"></div>
         </section>
-        <section id="directions">
-            <h2>Find Directions to a Shelter</h2>
-            <label for="start">Start:</label>
-            <select id="start">
-                <option value="current">Use My Location</option>
-                <option value="1600 Pennsylvania Ave NW, Washington, DC">White House</option>
-                <option value="600 Massachusetts Ave NW, Washington, DC">Bus Station</option>
-                <option value="Union Station, Washington, DC">Union Station</option>
-            </select>
-            <label for="end">Select a Shelter:</label>
-            <select id="end"></select>
-            <button id="get-directions">Get Directions</button>
-            <div id="directions-panel" style="margin-top: 20px; background: #fff; padding: 10px; border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);"></div>
-        </section>
     </main>
-    <script src="https://karolmfg.github.io/Hack4Homeless/scripts/script.js" defer></script>
+    <script>
+        let map, directionsService, directionsRenderer;
+        function initMap() {
+            map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 12,
+                center: { lat: 38.9072, lng: -77.0369 },
+            });
+            directionsService = new google.maps.DirectionsService();
+            directionsRenderer = new google.maps.DirectionsRenderer();
+            directionsRenderer.setMap(map);
+            loadShelters();
+        }
+        document.getElementById("shelter-request-form").addEventListener("submit", function (e) {
+            e.preventDefault();
+            const shelter = {
+                name: document.getElementById("shelter-name").value,
+                address: document.getElementById("shelter-address").value,
+                lat: parseFloat(document.getElementById("shelter-lat").value),
+                lng: parseFloat(document.getElementById("shelter-lng").value)
+            };
+            new google.maps.Marker({
+                position: { lat: shelter.lat, lng: shelter.lng },
+                map: map,
+                title: shelter.name
+            });
+            let shelters = JSON.parse(localStorage.getItem("shelters")) || [];
+            shelters.push(shelter);
+            localStorage.setItem("shelters", JSON.stringify(shelters));
+            alert("Shelter request submitted successfully!");
+            e.target.reset();
+        });
+        function loadShelters() {
+            const shelters = JSON.parse(localStorage.getItem("shelters")) || [];
+            shelters.forEach(shelter => {
+                new google.maps.Marker({
+                    position: { lat: shelter.lat, lng: shelter.lng },
+                    map: map,
+                    title: shelter.name
+                });
+            });
+        }
+    </script>
 </body>
 </html>
