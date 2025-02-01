@@ -13,7 +13,7 @@ jobs:
 
       - name: Create API Config File
         run: |
-          echo '{ "GOOGLE_MAPS_API_KEY": "${{ secrets.GOOGLE_MAPS_API_KEY }}" }' > config.json
+          echo '{ "GOOGLE_MAPS_API_KEY": "${{ secrets.GOOGLE_MAPS_API_KEY }}", "apiKey": "${{ secrets.GOOGLE_MAPS_API_KEY }}" }' > config.json
 
       - name: Ensure GitHub Pages Serves JSON Files
         run: touch .nojekyll
