@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main  # Change this to 'master' if your repo uses 'master'
+      - main
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -19,3 +19,4 @@ jobs:
         with:
           branch: gh-pages
           folder: .
+          token: ${{ secrets.GH_PAT }}  # Use Personal Access Token
