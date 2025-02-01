@@ -1,6 +1,11 @@
 let map, directionsService, directionsRenderer;
 
 document.addEventListener("DOMContentLoaded", () => {
+
+    
+    // Load API Key from config.json
+    loadApiKey();
+
     // Check if elements exist before adding event listeners
     const form = document.getElementById("shelter-request-form");
     const directionsButton = document.getElementById("get-directions");
@@ -14,9 +19,6 @@ document.addEventListener("DOMContentLoaded", () => {
     window.onload = function () {
         initMap();
     };
-
-    // Load API Key from config.json
-    loadApiKey();
 
 });
 
