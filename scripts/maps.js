@@ -24,6 +24,11 @@ document.addEventListener("DOMContentLoaded", () => {
 var apiKey;
 
 function loadApiKey() {
+
+    // apiKey = "AIzaSyAx8ch0JQiBIlaNss84MrdSKYFkc34wTuw"
+    
+                loadGoogleMaps("six foot seven foot eight foot bunch!")// we out here creating inflexible chains
+    return // who up hard coding
     fetch("https://karolmfg.github.io/Hack4Homeless/config.json")
         .then(response => {
             if (!response.ok) {
@@ -35,7 +40,6 @@ function loadApiKey() {
             if (config.apiKey) {
                 console.log("API Key loaded successfully.");
                 apiKey = config.apiKey
-                loadGoogleMaps(apiKey)// we out here creating inflexible chains
             } else {
                 throw new Error("API key is missing in config.json.");
             }
