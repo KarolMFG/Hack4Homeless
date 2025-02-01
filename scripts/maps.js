@@ -194,8 +194,6 @@ function initMap() {
 
     loadShelters();
 }
-
-
 function getDirections() {
     let start = document.getElementById("start").value;
     let end = document.getElementById("end").value ? document.getElementById("end").value.split(",") : null;
@@ -206,6 +204,8 @@ function getDirections() {
         return;
     }
 
+    let destination = { lat: parseFloat(end[0]), lng: parseFloat(end[1]) };
+
     if (start === "current") {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
@@ -214,7 +214,7 @@ function getDirections() {
                         lat: position.coords.latitude,
                         lng: position.coords.longitude
                     };
-                    calculateAndDisplayRoute(userLocation, { lat: parseFloat(end[0]), lng: parseFloat(end[1]) }, travelMode);
+                    calculateAndDisplayRoute(userLocation, destination, travelMode);
                 },
                 () => {
                     alert("Geolocation failed. Please enter your location manually.");
@@ -224,30 +224,27 @@ function getDirections() {
             alert("Geolocation is not supported by your browser.");
         }
     } else {
-        calculateAndDisplayRoute(start, { lat: parseFloat(end[0]), lng: parseFloat(end[1]) }, travelMode);
+        calculateAndDisplayRoute(start, destination, travelMode);
     }
 }
+
 function calculateAndDisplayRoute(start, end, travelMode) {
     if (!directionsService || !directionsRenderer) {
         console.error("Directions service not initialized.");
         alert("Error loading directions. Please try again.");
         return;
     }
+
     let request = {
-        origin: start,
-        destination: end,
+        origin: typeof start === "string" ? start : new google.maps.LatLng(start.lat, start.lng),
+        destination: new google.maps.LatLng(end.lat, end.lng),
         travelMode: google.maps.TravelMode[travelMode]
     };
-        if (travelMode === "TRANSIT") {
-        request.transitOptions = {
-            departureTime: new Date()
-        };
-    }
+
     directionsService.route(request, (response, status) => {
         if (status === google.maps.DirectionsStatus.OK) {
             directionsRenderer.setDirections(response);
         } else {
-            console.error("Directions request failed due to: ", status);
             alert("Directions request failed due to " + status);
         }
     });
