@@ -2,7 +2,28 @@ let map, directionsService, directionsRenderer;
 
 document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("shelter-request-form").addEventListener("submit", addShelter);
+    document.getElementById("get-directions").addEventListener("click", getDirections);
 });
+
+function initMap() {
+    if (!window.google || !google.maps) {
+        console.error("Google Maps API failed to load.");
+        alert("Google Maps API failed to load. Please check your API key.");
+        return;
+    }
+
+    map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 12,
+        center: { lat: 38.9072, lng: -77.0369 }, // Washington, DC
+    });
+
+    directionsService = new google.maps.DirectionsService();
+    directionsRenderer = new google.maps.DirectionsRenderer();
+    directionsRenderer.setMap(map);
+    directionsRenderer.setPanel(document.getElementById("directions-panel"));
+
+    loadShelters();
+}
 
 function addShelter(e) {
     e.preventDefault();
@@ -30,7 +51,7 @@ function addShelter(e) {
         shelters.push(shelter);
         localStorage.setItem("shelters", JSON.stringify(shelters));
 
-        updateShelterDropdown(); // Update the dropdown list
+        updateShelterDropdown();
     } else {
         alert("Error: Map is not initialized.");
     }
@@ -46,10 +67,6 @@ function loadShelters() {
     }
 
     const shelters = JSON.parse(localStorage.getItem("shelters")) || [];
-
-    if (shelters.length === 0) {
-        console.warn("No shelters found in localStorage.");
-    }
 
     shelters.forEach(shelter => {
         new google.maps.Marker({
@@ -83,27 +100,7 @@ function updateShelterDropdown() {
     }
 }
 
-function initMap() {
-    if (!window.google || !google.maps) {
-        console.error("Google Maps API failed to load.");
-        alert("Google Maps API failed to load. Please check your API key.");
-        return;
-    }
-
-    map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 12,
-        center: { lat: 38.9072, lng: -77.0369 } // Washington, DC
-    });
-
-    directionsService = new google.maps.DirectionsService();
-    directionsRenderer = new google.maps.DirectionsRenderer();
-    directionsRenderer.setMap(map);
-    directionsRenderer.setPanel(document.getElementById("directions-panel"));
-
-    loadShelters(); // Ensure existing shelters are loaded
-}
-
-document.getElementById("get-directions").addEventListener("click", () => {
+function getDirections() {
     let start = document.getElementById("start").value;
     let end = document.getElementById("end").value.split(",");
 
@@ -132,7 +129,7 @@ document.getElementById("get-directions").addEventListener("click", () => {
     } else {
         calculateAndDisplayRoute(start, { lat: parseFloat(end[0]), lng: parseFloat(end[1]) });
     }
-});
+}
 
 function calculateAndDisplayRoute(start, end) {
     directionsService.route(
