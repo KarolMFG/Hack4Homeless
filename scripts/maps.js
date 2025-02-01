@@ -1,15 +1,36 @@
 let map, directionsService, directionsRenderer;
 
 document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById("shelter-request-form").addEventListener("submit", addShelter);
-    document.getElementById("get-directions").addEventListener("click", getDirections);
-    initAutocomplete();
+    if (document.getElementById("shelter-request-form")) {
+        document.getElementById("shelter-request-form").addEventListener("submit", addShelter);
+    }
+
+    if (document.getElementById("get-directions")) {
+        document.getElementById("get-directions").addEventListener("click", getDirections);
+    }
+
+    if (document.getElementById("shelter-address")) {
+        initAutocomplete();
+    }
+
+    window.onload = function () {
+        initMap();
+    };
 });
 
 function initAutocomplete() {
-    let addressInput = document.getElementById("shelter-address");
-    let autocomplete = new google.maps.places.Autocomplete(addressInput);
+    if (!window.google || !google.maps || !google.maps.places) {
+        console.error("Google Maps API not loaded.");
+        return;
+    }
 
+    let addressInput = document.getElementById("shelter-address");
+    if (!addressInput) {
+        console.error("Autocomplete input field not found!");
+        return;
+    }
+
+    let autocomplete = new google.maps.places.Autocomplete(addressInput);
     autocomplete.addListener("place_changed", function () {
         let place = autocomplete.getPlace();
         if (!place.geometry) {
@@ -59,8 +80,8 @@ function loadShelters() {
         { name: "The Father McKenna Center", lat: 38.8993, lng: -77.0260 }
     ];
 
-    var shelters = JSON.parse(localStorage.getItem("shelters")) || [];
-    shelters = shelters.concat(sampleShelters)
+    let shelters = JSON.parse(localStorage.getItem("shelters")) || [];
+    shelters = shelters.concat(sampleShelters);
 
     shelters.forEach(shelter => {
         new google.maps.Marker({
@@ -75,6 +96,11 @@ function loadShelters() {
 
 function updateShelterDropdown() {
     const shelterDropdown = document.getElementById("end");
+    if (!shelterDropdown) {
+        console.error("Shelter dropdown not found!");
+        return;
+    }
+
     shelterDropdown.innerHTML = "";
     const shelters = JSON.parse(localStorage.getItem("shelters")) || [];
 
@@ -100,7 +126,13 @@ function initMap() {
         return;
     }
 
-    map = new google.maps.Map(document.getElementById("map"), {
+    let mapDiv = document.getElementById("map");
+    if (!mapDiv) {
+        console.error("Map container not found!");
+        return;
+    }
+
+    map = new google.maps.Map(mapDiv, {
         zoom: 12,
         center: { lat: 38.9072, lng: -77.0369 } // Default to Washington, DC
     });
@@ -115,7 +147,7 @@ function initMap() {
 
 function getDirections() {
     let start = document.getElementById("start").value;
-    let end = document.getElementById("end").value.split(",");
+    let end = document.getElementById("end").value ? document.getElementById("end").value.split(",") : null;
     let travelMode = document.getElementById("travel-mode").value;
 
     if (!end || end.length !== 2) {
@@ -146,6 +178,12 @@ function getDirections() {
 }
 
 function calculateAndDisplayRoute(start, end, travelMode) {
+    if (!directionsService || !directionsRenderer) {
+        console.error("Directions service not initialized.");
+        alert("Error loading directions. Please try again.");
+        return;
+    }
+
     directionsService.route(
         {
             origin: start,
