@@ -39,6 +39,18 @@ function loadApiKey() {
         });
 }
 
+function loadGoogleMaps(apiKey) {
+        if (!apiKey) {
+            console.error("Error: API key is missing.");
+            alert("Error: Google Maps API key not found.");
+            return;
+        }
+        const script = document.createElement("script");
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initMap&v=weekly`;
+        script.defer = true;
+        document.head.appendChild(script);
+    }
+
 function initAutocomplete() {
     if (!window.google || !google.maps || !google.maps.places) {
         console.error("Google Maps API not loaded.");
