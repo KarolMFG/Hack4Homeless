@@ -102,7 +102,7 @@ function initMap() {
 function getDirections() {
     let start = document.getElementById("start").value;
     let end = document.getElementById("end").value.split(",");
-    let travelMode = document.getElementById("travel-mode").value;
+    let travelMode = document.getElementById("travel-mode").value;  // Get selected mode
 
     if (!end || end.length !== 2) {
         alert("Please select a valid shelter.");
@@ -131,14 +131,13 @@ function getDirections() {
     }
 }
 
-function calculateAndDisplayRoute(start, end) {
-    const selectedMode = document.getElementById("travel-mode").value;
 
+function calculateAndDisplayRoute(start, end, travelMode) {
     directionsService.route(
         {
             origin: start,
             destination: end,
-            travelMode: google.maps.TravelMode[selectedMode]
+            travelMode: google.maps.TravelMode[travelMode]  // Use the selected mode
         },
         (response, status) => {
             if (status === "OK") {
