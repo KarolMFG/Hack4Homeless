@@ -74,23 +74,28 @@
             <div id="map" style="height: 500px; width: 100%;"></div>
         </section>
 
-        <section id="directions">
-            <h2>Find Directions to a Shelter</h2>
-            <label for="start">Start:</label>
-            <select id="start">
-                <option value="current">Use My Location</option>
-                <option value="1600 Pennsylvania Ave NW, Washington, DC">White House</option>
-                <option value="600 Massachusetts Ave NW, Washington, DC">Bus Station</option>
-                <option value="Union Station, Washington, DC">Union Station</option>
-            </select>
+<section id="directions">
+    <h2>Find Directions to a Shelter</h2>
 
-            <label for="end">Select a Shelter:</label>
-            <select id="end"></select>
-
-            <button id="get-directions">Get Directions</button>
-
-            <div id="directions-panel" style="margin-top: 20px; background: #fff; padding: 10px; border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);"></div>
-        </section>
+    <label for="start">Start:</label>
+    <select id="start">
+        <option value="current">Use My Location</option>
+        <option value="1600 Pennsylvania Ave NW, Washington, DC">White House</option>
+        <option value="600 Massachusetts Ave NW, Washington, DC">Bus Station</option>
+        <option value="Union Station, Washington, DC">Union Station</option>
+    </select>
+    <label for="end">Select a Shelter:</label>
+    <select id="end"></select>
+    <label for="travel-mode">Travel Mode:</label>
+    <select id="travel-mode">
+        <option value="WALKING">Walking</option>
+        <option value="DRIVING">Driving</option>
+        <option value="BICYCLING">Bicycling</option>
+        <option value="TRANSIT">Public Transport</option>
+    </select>
+    <button id="get-directions">Get Directions</button>
+    <div id="directions-panel" style="margin-top: 20px; background: #fff; padding: 10px; border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);"></div>
+</section>
     </main>
     
     <script src="https://karolmfg.github.io/Hack4Homeless/scripts/maps.js" defer></script>
