@@ -45,13 +45,16 @@ function loadApiKey() {
 }
 
 function loadGoogleMaps(apiKey) {
-        if (!apiKey) {
-            console.error("Error: API key is missing.");
-            alert("Error: Google Maps API key not found.");
-            return;
-        }
+        // if (!apiKey) {
+        //     console.error("Error: API key is missing.");
+        //     alert("Error: Google Maps API key not found.");
+        //     return;
+        // }
         const script = document.createElement("script");
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initMap&v=weekly`;
+        // script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initMap&v=weekly`;
+        script.src = "https://maps.googleapis.com/maps/api/js?key="+"AIzaSyAx8ch0JQiBIlaNss84MrdSKYFkc34wTuw"+
+            
+            "&libraries=places&callback=initMap&v=weekly";
         script.defer = true;
         document.head.appendChild(script);
     }
