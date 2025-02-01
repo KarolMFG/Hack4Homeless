@@ -3,32 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hack4Homeless</title>
+    <title>HackForHomeless</title>
     <link rel="stylesheet" href="stylesheet.css">
-    <!--api key is not a big deal-->
-<script>
-    fetch('config.json')
-        .then(response => response.json())
-        .then(config => {
-            const script = document.createElement('script');
-            script.src = `https://maps.googleapis.com/maps/api/js?key=${config.GOOGLE_MAPS_API_KEY}&callback=initMap&v=weekly`;
-            script.defer = true;
-            document.head.appendChild(script);
-        })
-        .catch(error => console.error("Error loading API key:", error));
-</script>
+
+    <!-- Load API Key Securely -->
+    <script>
+        fetch('config.json')
+            .then(response => response.json())
+            .then(config => {
+                const script = document.createElement('script');
+                script.src = `https://maps.googleapis.com/maps/api/js?key=${config.GOOGLE_MAPS_API_KEY}&callback=initMap&v=weekly`;
+                script.defer = true;
+                document.head.appendChild(script);
+            })
+            .catch(error => console.error("Error loading API key:", error));
+    </script>
+
+    <!-- External Logo Script -->
     <script src="https://karolmfg.github.io/Hack4Homeless/scripts/logo.js" defer></script>
+
     <script>
         let map, directionsService, directionsRenderer;
+
         function initMap() {
             map = new google.maps.Map(document.getElementById("map"), {
                 zoom: 12,
                 center: { lat: 38.9072, lng: -77.0369 }, // Washington, DC
             });
+
             directionsService = new google.maps.DirectionsService();
             directionsRenderer = new google.maps.DirectionsRenderer();
             directionsRenderer.setMap(map);
             directionsRenderer.setPanel(document.getElementById("directions-panel"));
+
             const shelters = [
                 { name: "DC Central Kitchen", lat: 38.9006, lng: -77.0437 },
                 { name: "Miriam’s Kitchen", lat: 38.9027, lng: -77.0176 },
@@ -36,6 +43,8 @@
                 { name: "Friendship Place", lat: 38.9106, lng: -77.0324 },
                 { name: "The Father McKenna Center", lat: 38.8993, lng: -77.0260 }
             ];
+
+            // Add shelter markers to the map
             shelters.forEach(shelter => {
                 new google.maps.Marker({
                     position: { lat: shelter.lat, lng: shelter.lng },
@@ -43,6 +52,8 @@
                     title: shelter.name
                 });
             });
+
+            // Populate the dropdown with shelter locations
             const shelterDropdown = document.getElementById("end");
             shelters.forEach(shelter => {
                 let option = document.createElement("option");
@@ -50,9 +61,12 @@
                 option.textContent = shelter.name;
                 shelterDropdown.appendChild(option);
             });
+
+            // Handle Directions Request
             document.getElementById("get-directions").addEventListener("click", () => {
                 let start = document.getElementById("start").value;
                 let end = document.getElementById("end").value.split(",");
+
                 if (start === "current") {
                     if (navigator.geolocation) {
                         navigator.geolocation.getCurrentPosition((position) => {
@@ -72,12 +86,13 @@
                 }
             });
         }
+
         function calculateAndDisplayRoute(start, end) {
             directionsService.route(
                 {
                     origin: start,
                     destination: end,
-                    travelMode: google.maps.TravelMode.WALKING,
+                    travelMode: google.maps.TravelMode.WALKING, // Change to DRIVING if needed
                 },
                 (response, status) => {
                     if (status === "OK") {
@@ -102,6 +117,7 @@
             </ul>
         </nav>
     </header>
+
     <main>
         <section id="tutoring">
             <h2>Tutoring Services for Homeless Students</h2>
@@ -153,6 +169,7 @@
             <div id="directions-panel" style="margin-top: 20px; background: #fff; padding: 10px; border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);"></div>
         </section>
     </main>
+
     <footer>
         <p>Karol Grondelski & Amin Smith</p>
     </footer>
