@@ -74,3 +74,7 @@ a :visited{color:#a4a}
         margin: 10px 0;
     }
 }
+#map {
+    height: 600px;
+    width: 100%;
+}
