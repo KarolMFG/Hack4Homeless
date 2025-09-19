@@ -27,7 +27,7 @@ var apiKey;
 
 function loadApiKey() {
 
-    // apiKey = "AIzaSyAx8ch0JQiBIlaNss84MrdSKYFkc34wTuw"
+     apiKey = "AIzaSyAx8ch0JQiBIlaNss84MrdSKYFkc34wTuw"
     
                 loadGoogleMaps("six foot seven foot eight foot bunch!")// we out here creating inflexible chains
     return // who up hard coding
